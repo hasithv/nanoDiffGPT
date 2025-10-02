@@ -1,0 +1,8 @@
+{"time":"2025-09-26T19:14:33.92801643-05:00","level":"INFO","msg":"stream: starting","core version":"0.22.0"}
+{"time":"2025-09-26T19:14:34.482473671-05:00","level":"INFO","msg":"stream: created new stream","id":"phris1uy"}
+{"time":"2025-09-26T19:14:34.482619163-05:00","level":"INFO","msg":"stream: started","id":"phris1uy"}
+{"time":"2025-09-26T19:14:34.482684834-05:00","level":"INFO","msg":"handler: started","stream_id":"phris1uy"}
+{"time":"2025-09-26T19:14:34.482663364-05:00","level":"INFO","msg":"writer: started","stream_id":"phris1uy"}
+{"time":"2025-09-26T19:14:34.482747535-05:00","level":"INFO","msg":"sender: started","stream_id":"phris1uy"}
+{"time":"2025-09-26T19:23:20.215975543-05:00","level":"ERROR","msg":"HTTP error","status":404,"method":"POST","url":"https://api.wandb.ai/files/hasithv-university-of-texas-at-austin/shakespeare-char/phris1uy/file_stream"}
+{"time":"2025-09-26T19:23:20.216082194-05:00","level":"ERROR+4","msg":"filestream: fatal error: filestream: failed to upload: 404 Not Found path=files/hasithv-university-of-texas-at-austin/shakespeare-char/phris1uy/file_stream: {\"error\":\"run shakespeare-char/phris1uy not found while streaming file\"}"}

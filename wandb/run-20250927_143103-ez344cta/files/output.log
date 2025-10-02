@@ -1,0 +1,91 @@
+step 0: train loss 4.1219, val loss 4.1153
+iter 0: loss 4.1513, time 38097.69ms, mfu -100.00%
+iter 10: loss 3.3683, time 143.22ms, mfu 54.08%
+iter 20: loss 3.3218, time 141.72ms, mfu 54.14%
+iter 30: loss 3.3149, time 140.17ms, mfu 54.25%
+iter 40: loss 3.3075, time 140.63ms, mfu 54.34%
+iter 50: loss 3.3185, time 143.90ms, mfu 54.29%
+iter 60: loss 3.3166, time 142.14ms, mfu 54.31%
+iter 70: loss 3.3236, time 141.22ms, mfu 54.36%
+iter 80: loss 3.3171, time 141.91ms, mfu 54.38%
+iter 90: loss 3.3186, time 141.83ms, mfu 54.41%
+iter 100: loss 3.3142, time 142.33ms, mfu 54.41%
+iter 110: loss 3.3177, time 140.22ms, mfu 54.49%
+iter 120: loss 3.3115, time 142.14ms, mfu 54.49%
+iter 130: loss 3.3069, time 146.13ms, mfu 54.34%
+iter 140: loss 3.3194, time 142.47ms, mfu 54.35%
+iter 150: loss 3.2989, time 142.12ms, mfu 54.36%
+iter 160: loss 3.3048, time 142.31ms, mfu 54.37%
+iter 170: loss 3.3039, time 143.02ms, mfu 54.35%
+iter 180: loss 3.3149, time 142.80ms, mfu 54.34%
+iter 190: loss 3.3045, time 141.89ms, mfu 54.36%
+iter 200: loss 3.3059, time 143.77ms, mfu 54.32%
+iter 210: loss 3.2981, time 142.71ms, mfu 54.31%
+iter 220: loss 3.3068, time 143.73ms, mfu 54.27%
+iter 230: loss 3.3033, time 143.06ms, mfu 54.26%
+iter 240: loss 3.3023, time 142.21ms, mfu 54.28%
+step 250: train loss 3.3050, val loss 3.3419
+saving checkpoint to out-shakespeare-char
+iter 250: loss 3.2943, time 18248.84ms, mfu 48.89%
+iter 260: loss 3.3118, time 143.42ms, mfu 49.41%
+iter 270: loss 3.3093, time 142.67ms, mfu 49.89%
+iter 280: loss 3.3022, time 142.68ms, mfu 50.33%
+iter 290: loss 3.3111, time 144.27ms, mfu 50.67%
+iter 300: loss 3.3111, time 143.31ms, mfu 51.01%
+iter 310: loss 3.2973, time 143.87ms, mfu 51.29%
+iter 320: loss 3.2930, time 144.24ms, mfu 51.53%
+iter 330: loss 3.2803, time 143.67ms, mfu 51.77%
+iter 340: loss 3.2650, time 146.52ms, mfu 51.88%
+iter 350: loss 3.2514, time 143.53ms, mfu 52.09%
+iter 360: loss 3.2206, time 141.93ms, mfu 52.34%
+iter 370: loss 3.2007, time 143.83ms, mfu 52.49%
+iter 380: loss 3.1989, time 154.13ms, mfu 52.27%
+iter 390: loss 3.1713, time 143.80ms, mfu 52.43%
+iter 400: loss 3.1505, time 143.80ms, mfu 52.57%
+iter 410: loss 3.1225, time 144.06ms, mfu 52.69%
+iter 420: loss 3.0984, time 177.13ms, mfu 51.80%
+iter 430: loss 3.0821, time 185.37ms, mfu 50.79%
+iter 440: loss 3.0544, time 141.36ms, mfu 51.19%
+iter 450: loss 3.0234, time 143.85ms, mfu 51.46%
+iter 460: loss 3.0271, time 145.59ms, mfu 51.63%
+iter 470: loss 2.9942, time 144.84ms, mfu 51.82%
+iter 480: loss 2.9846, time 144.45ms, mfu 52.00%
+iter 490: loss 2.9848, time 146.38ms, mfu 52.09%
+step 500: train loss 2.9064, val loss 2.9139
+saving checkpoint to out-shakespeare-char
+iter 500: loss 2.9550, time 18830.49ms, mfu 46.92%
+iter 510: loss 2.9262, time 144.29ms, mfu 47.60%
+iter 520: loss 2.9386, time 155.82ms, mfu 47.81%
+iter 530: loss 2.9436, time 144.58ms, mfu 48.39%
+iter 540: loss 2.8911, time 147.17ms, mfu 48.81%
+iter 550: loss 2.8571, time 143.69ms, mfu 49.32%
+iter 560: loss 2.8416, time 144.01ms, mfu 49.77%
+iter 570: loss 2.8395, time 145.34ms, mfu 50.12%
+iter 580: loss 2.8213, time 145.49ms, mfu 50.43%
+iter 590: loss 2.7798, time 144.02ms, mfu 50.77%
+iter 600: loss 2.8050, time 143.57ms, mfu 51.09%
+iter 610: loss 2.8073, time 142.82ms, mfu 51.40%
+iter 620: loss 2.7592, time 144.63ms, mfu 51.62%
+iter 630: loss 2.7401, time 143.20ms, mfu 51.87%
+iter 640: loss 2.7490, time 147.08ms, mfu 51.95%
+iter 650: loss 2.7201, time 144.61ms, mfu 52.11%
+iter 660: loss 2.7609, time 144.57ms, mfu 52.26%
+iter 670: loss 2.6854, time 143.38ms, mfu 52.43%
+iter 680: loss 2.7230, time 145.72ms, mfu 52.51%
+iter 690: loss 2.7109, time 140.94ms, mfu 52.75%
+iter 700: loss 2.7367, time 145.69ms, mfu 52.79%
+iter 710: loss 2.7178, time 140.36ms, mfu 53.03%
+iter 720: loss 2.6692, time 193.42ms, mfu 51.73%
+iter 730: loss 2.7068, time 140.99ms, mfu 52.06%
+iter 740: loss 2.6858, time 146.05ms, mfu 52.15%
+step 750: train loss 2.5590, val loss 2.5786
+Traceback (most recent call last):
+  File "/stor/home/vv8379/projects/nanollms/nanoDiffGPT/train.py", line 277, in <module>
+    print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+  File "/stor/home/vv8379/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/stor/home/vv8379/projects/nanollms/nanoDiffGPT/.venv/lib/python3.11/site-packages/wandb/sdk/lib/console_capture.py", line 168, in write_with_callbacks
+    n = orig_write(s)
+        ^^^^^^^^^^^^^
+KeyboardInterrupt

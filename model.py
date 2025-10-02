@@ -15,6 +15,8 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
+import pdb
+
 class LayerNorm(nn.Module):
     """ LayerNorm but with an optional bias. PyTorch doesn't support simply bias=False """
 
@@ -45,9 +47,10 @@ class CausalSelfAttention(nn.Module):
         self.flash = hasattr(torch.nn.functional, 'scaled_dot_product_attention')
         if not self.flash:
             print("WARNING: using slow attention. Flash Attention requires PyTorch >= 2.0")
-            # causal mask to ensure that attention is only applied to the left in the input sequence
-            self.register_buffer("bias", torch.tril(torch.ones(config.block_size, config.block_size))
-                                        .view(1, 1, config.block_size, config.block_size))
+            raise NotImplementedError("Please use PyTorch >= 2.0 to use Flash Attention")
+            # # causal mask to ensure that attention is only applied to the left in the input sequence
+            # self.register_buffer("bias", torch.tril(torch.ones(config.block_size, config.block_size))
+            #                             .view(1, 1, config.block_size, config.block_size))
 
     def forward(self, x):
         B, T, C = x.size() # batch size, sequence length, embedding dimensionality (n_embd)
@@ -61,11 +64,11 @@ class CausalSelfAttention(nn.Module):
         # causal self-attention; Self-attend: (B, nh, T, hs) x (B, nh, hs, T) -> (B, nh, T, T)
         if self.flash:
             # efficient attention using Flash Attention CUDA kernels
-            y = torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=None, dropout_p=self.dropout if self.training else 0, is_causal=True)
+            y = torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=None, dropout_p=self.dropout if self.training else 0, is_causal=False)
         else:
             # manual implementation of attention
             att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-            att = att.masked_fill(self.bias[:,:,:T,:T] == 0, float('-inf'))
+            # att = att.masked_fill(self.bias[:,:,:T,:T] == 0, float('-inf'))
             att = F.softmax(att, dim=-1)
             att = self.attn_dropout(att)
             y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
@@ -168,6 +171,7 @@ class GPT(nn.Module):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
     def forward(self, idx, targets=None):
+        # breakpoint()
         device = idx.device
         b, t = idx.size()
         assert t <= self.config.block_size, f"Cannot forward sequence of length {t}, block size is only {self.config.block_size}"
@@ -184,10 +188,19 @@ class GPT(nn.Module):
         if targets is not None:
             # if we are given some desired targets also calculate the loss
             logits = self.lm_head(x)
-            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
+
+            mask_id = self.config.vocab_size - 1
+            idx_masked = (idx == mask_id)
+            idx_masked_tok_logits = logits[idx_masked, :]
+            targets_masked = targets[idx_masked]
+            
+            loss = F.cross_entropy(idx_masked_tok_logits, targets_masked, reduction='mean')
+            
+            # loss will be the cross entropy between the targets and the tokens which are masked (max vocab size)
+            # loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1, size_average=True)
         else:
             # inference-time mini-optimization: only forward the lm_head on the very last position
-            logits = self.lm_head(x[:, [-1], :]) # note: using list [-1] to preserve the time dim
+            logits = self.lm_head(x) # note: using list [-1] to preserve the time dim
             loss = None
 
         return logits, loss
@@ -303,28 +316,55 @@ class GPT(nn.Module):
         return mfu
 
     @torch.no_grad()
-    def generate(self, idx, max_new_tokens, temperature=1.0, top_k=None):
-        """
-        Take a conditioning sequence of indices idx (LongTensor of shape (b,t)) and complete
-        the sequence max_new_tokens times, feeding the predictions back into the model each time.
-        Most likely you'll want to make sure to be in model.eval() mode of operation for this.
-        """
-        for _ in range(max_new_tokens):
-            # if the sequence context is growing too long we must crop it at block_size
-            idx_cond = idx if idx.size(1) <= self.config.block_size else idx[:, -self.config.block_size:]
-            # forward the model to get the logits for the index in the sequence
-            logits, _ = self(idx_cond)
-            # pluck the logits at the final step and scale by desired temperature
-            logits = logits[:, -1, :] / temperature
-            # optionally crop the logits to only the top k options
-            if top_k is not None:
-                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
-                logits[logits < v[:, [-1]]] = -float('Inf')
-            # apply softmax to convert logits to (normalized) probabilities
-            probs = F.softmax(logits, dim=-1)
-            # sample from the distribution
-            idx_next = torch.multinomial(probs, num_samples=1)
-            # append sampled index to the running sequence and continue
-            idx = torch.cat((idx, idx_next), dim=1)
+    def generate(self, max_new_tokens, iters=100, temperature=1.0, top_k=None):
+        # assert top_k==None or top_k==1
+        # breakpoint()
+        mask_id = self.config.vocab_size - 1
 
-        return idx
+        rt = torch.full((1,max_new_tokens), mask_id).to("cuda")
+        t = 1
+        for i in range(iters):
+            # breakpoint()
+            s = t - 1/iters
+
+            # greedy sample an r0 prediction from a forward pass
+            logits, _ = self(rt)
+            logits = logits/temperature
+            if top_k is None:
+                r0 = torch.argmax(logits, dim=-1)
+            else:
+                # breakpoint()
+                # Get the top k logits and their indices
+                v_size = logits.size(-1)
+                top_k_logits, top_k_indices = torch.topk(logits, min(top_k, v_size), dim=-1)
+                
+                # Create a new tensor with -inf everywhere
+                new_logits = torch.full_like(logits, float('-inf'))
+                
+                # Scatter the top k logits back to their original positions
+                new_logits.scatter_(-1, top_k_indices, top_k_logits)
+                
+                # Replace the original logits with the filtered ones
+                logits = new_logits
+
+                # breakpoint()
+                # apply softmax to convert logits to (normalized) probabilities
+                probs = F.softmax(logits, dim=-1)
+                # sample from the distribution
+                idx = torch.multinomial(probs.view(-1, probs.size(-1)), num_samples=1)
+                r0 = idx.view(probs.size(0), probs.size(1))
+
+            # if token is not previously masked, then it shouldn't be changed
+            was_masked = (rt == mask_id)
+            r0[~was_masked] = rt[~was_masked]
+            
+            # for each previously masked token, with prob s/t mask it again
+            # breakpoint()
+            remask = torch.full(was_masked.shape, s/t).to("cuda") > torch.rand(was_masked.shape).to("cuda")
+            remask = torch.bitwise_and(remask, was_masked)
+            r0[remask] = mask_id
+
+            t = s
+            rt = r0.clone().to("cuda")
+
+        return rt

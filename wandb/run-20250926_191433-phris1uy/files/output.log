@@ -1,0 +1,2 @@
+> /stor/home/vv8379/projects/nanollms/nanoGPT/train.py(228)estimate_loss()
+-> model.eval()
