@@ -1,7 +1,7 @@
 
 # nanoDiffGPT
 
-**Note:** This is a hacked version of nanoGPT that is made to behave like a diffusion LLM. Currently, it only supports training on chracter level tokens on the shakespeare dataset.
+**Note:** This is a hacked version of [nanoGPT](https://github.com/karpathy/nanoGPT/) that is made to behave like a diffusion LLM. Currently, it only supports training on chracter level tokens on the shakespeare dataset.
 
 ![nanoGPT](assets/nanogpt.jpg)
 
